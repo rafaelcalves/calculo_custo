@@ -1,4 +1,8 @@
-package br.com.unisinos.lab2.aula9quinta;
+package com.lab2.trabgb.ADT.impl;
+
+import com.lab2.trabgb.ADT.Stack;
+import com.lab2.trabgb.ADT.exceptions.OverflowException;
+import com.lab2.trabgb.ADT.exceptions.UnderflowException;
 
 public class StaticStack<E> implements Stack<E> {
 	// Ã�ndice do elemento no topo da pilha

@@ -1,4 +1,7 @@
-package com.lab2.trabgb;
+package com.lab2.trabgb.ADT;
+
+import com.lab2.trabgb.ADT.exceptions.OverflowException;
+import com.lab2.trabgb.ADT.exceptions.UnderflowException;
 
 public interface Stack<E> {
 	public boolean isEmpty();

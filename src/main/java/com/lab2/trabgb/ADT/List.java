@@ -1,4 +1,4 @@
-package com.lab2.trabgb;
+package com.lab2.trabgb.ADT;
 
 public interface List<E> {
 	public int numElements();

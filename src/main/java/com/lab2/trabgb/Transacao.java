@@ -22,4 +22,5 @@ public class Transacao {
         if (Double.compare(transacao.custoUnitario, custoUnitario) != 0) return false;
         return tipo != null ? tipo.equals(transacao.tipo) : transacao.tipo == null;
     }
+
 }

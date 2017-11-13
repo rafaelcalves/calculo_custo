@@ -1,12 +1,14 @@
 package com.lab2.trabgb;
 
+import com.lab2.trabgb.ADT.List;
+import com.lab2.trabgb.ADT.Stack;
+
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 public interface IMetodoCusto {
     void load(File file) throws IOException;
-    void calculateFIFO();
+    Stack calculateFIFO();
     void calculateLIFO();
     void showCalculations();
     void add(Transacao transaction);
