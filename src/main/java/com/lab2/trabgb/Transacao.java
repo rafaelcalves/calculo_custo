@@ -23,4 +23,27 @@ public class Transacao {
         return tipo != null ? tipo.equals(transacao.tipo) : transacao.tipo == null;
     }
 
+    public String getTipo() {
+        return tipo;
+    }
+
+    public int getQtde() {
+        return qtde;
+    }
+
+    public double getCustoUnitario() {
+        return custoUnitario;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public void setQtde(int qtde) {
+        this.qtde = qtde;
+    }
+
+    public void setCustoUnitario(double custoUnitario) {
+        this.custoUnitario = custoUnitario;
+    }
 }

@@ -38,4 +38,36 @@ public class CustoTotal {
         if (Double.compare(that.vlrCustoEstoque, vlrCustoEstoque) != 0) return false;
         return metodo != null ? metodo.equals(that.metodo) : that.metodo == null;
     }
+
+    public String getMetodo() {
+        return metodo;
+    }
+
+    public void setMetodo(String metodo) {
+        this.metodo = metodo;
+    }
+
+    public double getVlrCustoVenda() {
+        return vlrCustoVenda;
+    }
+
+    public void setVlrCustoVenda(double vlrCustoVenda) {
+        this.vlrCustoVenda = vlrCustoVenda;
+    }
+
+    public double getVlrCustoMedioUnitario() {
+        return vlrCustoMedioUnitario;
+    }
+
+    public void setVlrCustoMedioUnitario(double vlrCustoMedioUnitario) {
+        this.vlrCustoMedioUnitario = vlrCustoMedioUnitario;
+    }
+
+    public double getVlrCustoEstoque() {
+        return vlrCustoEstoque;
+    }
+
+    public void setVlrCustoEstoque(double vlrCustoEstoque) {
+        this.vlrCustoEstoque = vlrCustoEstoque;
+    }
 }

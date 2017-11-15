@@ -1,7 +1,7 @@
-package com.lab2.trabgb.ADT;
+package com.lab2.trabgb.collections;
 
-import com.lab2.trabgb.ADT.exceptions.OverflowException;
-import com.lab2.trabgb.ADT.exceptions.UnderflowException;
+import com.lab2.trabgb.collections.exceptions.OverflowException;
+import com.lab2.trabgb.collections.exceptions.UnderflowException;
 
 public interface Queue<E> {
 	  public int numElements();  

@@ -1,7 +1,7 @@
-package com.lab2.trabgb.ADT.impl;
+package com.lab2.trabgb.collections.impl;
 
-import com.lab2.trabgb.ADT.List;
-import com.lab2.trabgb.ADT.exceptions.OverflowException;
+import com.lab2.trabgb.collections.List;
+import com.lab2.trabgb.collections.exceptions.OverflowException;
 
 import java.util.Iterator;
 

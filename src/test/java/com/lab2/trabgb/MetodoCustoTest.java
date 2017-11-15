@@ -1,7 +1,8 @@
 package com.lab2.trabgb;
 
-import com.lab2.trabgb.ADT.List;
-import com.lab2.trabgb.ADT.Stack;
+import com.lab2.trabgb.collections.List;
+import com.lab2.trabgb.collections.Queue;
+import com.lab2.trabgb.collections.Stack;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,18 +15,24 @@ import static org.junit.Assert.assertTrue;
 
 public class MetodoCustoTest {
 
-    public static final Transacao TRANSACTION_1 = new Transacao("COMPRA", 20, 1.8);
-    public static final Transacao TRANSACTION_2 = new Transacao("COMPRA", 80, 2);
-    public static final Transacao TRANSACTION_3 = new Transacao("COMPRA", 50, 2.2);
-    public static final Transacao TRANSACTION_4 = new Transacao("VENDA", 30, 0.0);
-    public static final Transacao TRANSACTION_5 = new Transacao("VENDA", 40, 0.0);
-    public static final Transacao TRANSACTION_6 = new Transacao("COMPRA", 60, 1.7);
+    private Transacao TRANSACTION_1 = new Transacao("COMPRA", 20, 1.8);
+    private Transacao TRANSACTION_2 = new Transacao("COMPRA", 80, 2);
+    private Transacao TRANSACTION_3 = new Transacao("COMPRA", 50, 2.2);
+    private Transacao TRANSACTION_4 = new Transacao("VENDA", 30, 0.0);
+    private Transacao TRANSACTION_5 = new Transacao("VENDA", 40, 0.0);
+    private Transacao TRANSACTION_6 = new Transacao("COMPRA", 60, 1.7);
 
-    IMetodoCusto metodoCusto;
+    MetodoCusto metodoCusto;
 
     @Before
     public void prepare(){
        metodoCusto = new MetodoCusto();
+        TRANSACTION_1 = new Transacao("COMPRA", 20, 1.8);
+        TRANSACTION_2 = new Transacao("COMPRA", 80, 2);
+        TRANSACTION_3 = new Transacao("COMPRA", 50, 2.2);
+        TRANSACTION_4 = new Transacao("VENDA", 30, 0.0);
+        TRANSACTION_5 = new Transacao("VENDA", 40, 0.0);
+        TRANSACTION_6 = new Transacao("COMPRA", 60, 1.7);
     }
 
     @Test
@@ -44,12 +51,12 @@ public class MetodoCustoTest {
 
         List<Transacao> transactions = metodoCusto.getTransactions();
 
-        assertTrue(transactions.get(0).equals(TRANSACTION_6));
-        assertTrue(transactions.get(1).equals(TRANSACTION_5));
-        assertTrue(transactions.get(2).equals(TRANSACTION_4));
-        assertTrue(transactions.get(3).equals(TRANSACTION_3));
-        assertTrue(transactions.get(4).equals(TRANSACTION_2));
-        assertTrue(transactions.get(5).equals(TRANSACTION_1));
+        assertTrue(transactions.get(0).equals(TRANSACTION_1));
+        assertTrue(transactions.get(1).equals(TRANSACTION_2));
+        assertTrue(transactions.get(2).equals(TRANSACTION_3));
+        assertTrue(transactions.get(3).equals(TRANSACTION_4));
+        assertTrue(transactions.get(4).equals(TRANSACTION_5));
+        assertTrue(transactions.get(5).equals(TRANSACTION_6));
         assertEquals(transactions.numElements(),6);
     }
 
@@ -61,8 +68,8 @@ public class MetodoCustoTest {
 
         List<Transacao> transactions = metodoCusto.getTransactions();
 
-        assertTrue(transactions.get(0).equals(TRANSACTION_4));
-        assertTrue(transactions.get(1).equals(TRANSACTION_1));
+        assertTrue(transactions.get(0).equals(TRANSACTION_1));
+        assertTrue(transactions.get(1).equals(TRANSACTION_4));
     }
 
     @Test
@@ -74,19 +81,30 @@ public class MetodoCustoTest {
         metodoCusto.add(TRANSACTION_5);
         metodoCusto.add(TRANSACTION_6);
 
-        Stack<Transacao> stackFifo = metodoCusto.calculateFIFO();
+        metodoCusto.calculateFIFO();
 
-        assertTrue(stackFifo.pop().equals(TRANSACTION_6));
-        assertTrue(stackFifo.pop().equals(TRANSACTION_5));
-        assertTrue(stackFifo.pop().equals(TRANSACTION_4));
-        assertTrue(stackFifo.pop().equals(TRANSACTION_3));
-        assertTrue(stackFifo.pop().equals(TRANSACTION_2));
-        assertTrue(stackFifo.pop().equals(TRANSACTION_1));
+        assertTrue(136 == metodoCusto.getCustoTotalFIFO().getVlrCustoVenda());
+        assertTrue(272 == metodoCusto.getCustoTotalFIFO().getVlrCustoEstoque());
+        assertTrue(1.94 == metodoCusto.getCustoTotalFIFO().getVlrCustoMedioUnitario());
     }
 
     @Test
     public void canCallCalculateLIFO(){
-        metodoCusto.calculateLIFO();
+        metodoCusto.add(TRANSACTION_1);
+        metodoCusto.add(TRANSACTION_2);
+        metodoCusto.add(TRANSACTION_3);
+        metodoCusto.add(TRANSACTION_4);
+        metodoCusto.add(TRANSACTION_5);
+        metodoCusto.add(TRANSACTION_6);
+
+        Stack<Transacao> stackLifo = metodoCusto.calculateLIFO();
+
+        assertTrue(stackLifo.pop().equals(TRANSACTION_6));
+        assertTrue(stackLifo.pop().equals(TRANSACTION_5));
+        assertTrue(stackLifo.pop().equals(TRANSACTION_4));
+        assertTrue(stackLifo.pop().equals(TRANSACTION_3));
+        assertTrue(stackLifo.pop().equals(TRANSACTION_2));
+        assertTrue(stackLifo.pop().equals(TRANSACTION_1));
     }
 
     @Test

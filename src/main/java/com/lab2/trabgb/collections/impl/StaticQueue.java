@@ -1,8 +1,8 @@
-package com.lab2.trabgb.ADT.impl;
+package com.lab2.trabgb.collections.impl;
 
-import com.lab2.trabgb.ADT.Queue;
-import com.lab2.trabgb.ADT.exceptions.OverflowException;
-import com.lab2.trabgb.ADT.exceptions.UnderflowException;
+import com.lab2.trabgb.collections.Queue;
+import com.lab2.trabgb.collections.exceptions.OverflowException;
+import com.lab2.trabgb.collections.exceptions.UnderflowException;
 
 public class StaticQueue<E> implements Queue<E> {
 	protected int first, last;
