@@ -36,23 +36,6 @@ public class MetodoCustoUnitTest {
         TRANSACTION_6 = new Transacao("COMPRA", 60, 1.7);
     }
 
-//    @Test
-//    public void loadTransactionsFromFile() throws IOException{
-//
-//        String path = System.getProperty("user.dir") + "/files/";
-//        metodoCusto.loadTransactions(new File(path + "import.csv"));
-//
-//        List<Transacao> transactions = metodoCusto.getTransactions();
-//
-//        assertTrue(transactions.get(0).equals(TRANSACTION_1));
-//        assertTrue(transactions.get(1).equals(TRANSACTION_2));
-//        assertTrue(transactions.get(2).equals(TRANSACTION_3));
-//        assertTrue(transactions.get(3).equals(TRANSACTION_4));
-//        assertTrue(transactions.get(4).equals(TRANSACTION_5));
-//        assertTrue(transactions.get(5).equals(TRANSACTION_6));
-//        assertEquals(transactions.numElements(),6);
-//    }
-
     @Test
     public void addTwoTransactionsToTransactionsList(){
 
@@ -96,10 +79,5 @@ public class MetodoCustoUnitTest {
         assertTrue(258 == metodoCusto.getCustoTotalLIFO().getVlrCustoEstoque());
         assertTrue( 258.0/140 == metodoCusto.getCustoTotalLIFO().getVlrCustoMedioUnitario());
     }
-
-//    @Test
-//    public void canCallShowCalculations(){
-//        metodoCusto.showCalculations();
-//    }
 
 }

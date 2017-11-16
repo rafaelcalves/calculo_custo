@@ -21,6 +21,7 @@ public class MetodoCusto implements IMetodoCusto {
         custoTotalLIFO = new CustoTotal("UEPS");
     }
 
+    //Responsável por exigir inserção do arquivo desejado
     @Override
     public void loadTransactions() {
         boolean pathOk = false;
@@ -37,15 +38,13 @@ public class MetodoCusto implements IMetodoCusto {
         }
     }
 
+    //pede insersão do caminho do arquivo
     private File defineFile() {
         String path = teclado.leString("Digite o caminho do arquivo a ser carregado:");
-
-        if (path.equals("my"))
-            path = System.getProperty("user.dir") + "/files/import.csv";
-
         return new File(path);
     }
 
+    //carrega o arquivo no buffer
     private void loadFile(File file) throws IOException {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             transactions = new SinglyLinkedList<>();
@@ -53,6 +52,7 @@ public class MetodoCusto implements IMetodoCusto {
         }
     }
 
+    //processa o buffer linha a linha
     private void processBufferLines(BufferedReader br) throws IOException {
         String line;
         while ((line = br.readLine()) != null) {
@@ -63,6 +63,7 @@ public class MetodoCusto implements IMetodoCusto {
         }
     }
 
+    //copia as transações carregadas enfileirando-as
     @Override
     public void calculateFIFO() {
         custoTotalFIFO = new CustoTotal("PEPS");
@@ -74,6 +75,7 @@ public class MetodoCusto implements IMetodoCusto {
         calculateVlrCustoMedioUnitario(custoTotalFIFO, qtdEstoque);
     }
 
+    //processa as transacoes da fila
     private int processTransactionFIFO(int qtdEstoque, Queue<Transacao> queue, Transacao transaction) {
         if (transaction.getTipo().equals("COMPRA")) {
             queue.enqueue(transaction.clone());
@@ -84,19 +86,12 @@ public class MetodoCusto implements IMetodoCusto {
         return qtdEstoque;
     }
 
-    private void calculateVlrCustoMedioUnitario(CustoTotal custoTotal, int qtdEstoque) {
-        custoTotal.setVlrCustoMedioUnitario(custoTotal.getVlrCustoEstoque() / qtdEstoque);
-    }
-
-    private int updateCustoTotalWithBuyAndReturnQt(CustoTotal custoTotal, Transacao buy) {
-        custoTotal.setVlrCustoEstoque(custoTotal.getVlrCustoEstoque() + buy.getCustoUnitario() * buy.getQtde());
-        return buy.getQtde();
-    }
-
+    //começa a processar a venda
     private int discountFrontBuyFIFO(Queue<Transacao> queue, Transacao sell) {
         return discountFrontBuyFIFO(queue, sell, 0);
     }
 
+    //faz a recursão do disconto da compra até não haver quantidade pendente na venda
     private int discountFrontBuyFIFO(Queue<Transacao> queue, Transacao sell, int discountedQt) {
         Transacao frontBuy = queue.front();
 
@@ -111,19 +106,7 @@ public class MetodoCusto implements IMetodoCusto {
         return discountFrontBuyFIFO(queue, sell, discountedQt);
     }
 
-    private int setCustoTotalAndReturnDiscountedQtInSell(CustoTotal custoTotal, Transacao frontBuy, Transacao sell, int discountedQt) {
-        int toDiscountQt = sell.getQtde() - discountedQt;
-
-        if (toDiscountQt > frontBuy.getQtde())
-            toDiscountQt = frontBuy.getQtde();
-
-        frontBuy.setQtde(frontBuy.getQtde() - toDiscountQt);
-        custoTotal.setVlrCustoVenda(custoTotal.getVlrCustoVenda() + frontBuy.getCustoUnitario() * toDiscountQt);
-        custoTotal.setVlrCustoEstoque(custoTotal.getVlrCustoEstoque() - frontBuy.getCustoUnitario() * toDiscountQt);
-
-        return toDiscountQt;
-    }
-
+    //copia as transações empilhando-as
     @Override
     public void calculateLIFO() {
         custoTotalLIFO = new CustoTotal("UEPS");
@@ -135,6 +118,7 @@ public class MetodoCusto implements IMetodoCusto {
         calculateVlrCustoMedioUnitario(custoTotalLIFO, qtdEstoque);
     }
 
+    //processa as transações da pilha
     private int processTransactionLIFO(int qtdEstoque, Stack<Transacao> stack, Transacao transaction) {
         if (transaction.getTipo().equals("COMPRA")) {
             stack.push(transaction.clone());
@@ -145,11 +129,12 @@ public class MetodoCusto implements IMetodoCusto {
         return qtdEstoque;
     }
 
-
+    //começa a processar a venda
     private int discountFrontBuyLIFO(Stack<Transacao> stack, Transacao sell) {
         return discountFrontBuyLIFO(stack, sell, 0);
     }
 
+    //faz a recursão do disconto da compra até não haver quantidade pendente na venda
     private int discountFrontBuyLIFO(Stack<Transacao> stack, Transacao sell, int discountedQt) {
         Transacao frontBuy = stack.top();
 
@@ -164,6 +149,32 @@ public class MetodoCusto implements IMetodoCusto {
         return discountFrontBuyLIFO(stack, sell, discountedQt);
     }
 
+    //método usado tanto para UEPS quanto para PEPS. Serve para carregar os valores da venda processada no custo total
+    private int setCustoTotalAndReturnDiscountedQtInSell(CustoTotal custoTotal, Transacao frontBuy, Transacao sell, int discountedQt) {
+        int toDiscountQt = sell.getQtde() - discountedQt;
+
+        if (toDiscountQt > frontBuy.getQtde())
+            toDiscountQt = frontBuy.getQtde();
+
+        frontBuy.setQtde(frontBuy.getQtde() - toDiscountQt);
+        custoTotal.setVlrCustoVenda(custoTotal.getVlrCustoVenda() + frontBuy.getCustoUnitario() * toDiscountQt);
+        custoTotal.setVlrCustoEstoque(custoTotal.getVlrCustoEstoque() - frontBuy.getCustoUnitario() * toDiscountQt);
+
+        return toDiscountQt;
+    }
+
+    //calcula o custo médio
+    private void calculateVlrCustoMedioUnitario(CustoTotal custoTotal, int qtdEstoque) {
+        custoTotal.setVlrCustoMedioUnitario(custoTotal.getVlrCustoEstoque() / qtdEstoque);
+    }
+
+    //método usado tanto para UEPS quanto para PEPS. Serve para carregar os valores da compra processada no custo total
+    private int updateCustoTotalWithBuyAndReturnQt(CustoTotal custoTotal, Transacao buy) {
+        custoTotal.setVlrCustoEstoque(custoTotal.getVlrCustoEstoque() + buy.getCustoUnitario() * buy.getQtde());
+        return buy.getQtde();
+    }
+
+    //apresenta os cálculos ao usuário conforme solicitado
     @Override
     public void showCalculations() {
         String metodo = "";
