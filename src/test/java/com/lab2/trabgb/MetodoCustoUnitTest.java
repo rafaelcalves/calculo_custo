@@ -4,6 +4,7 @@ import com.lab2.trabgb.collections.List;
 import com.lab2.trabgb.collections.Queue;
 import com.lab2.trabgb.collections.Stack;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -13,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class MetodoCustoTest {
+public class MetodoCustoUnitTest {
 
     private Transacao TRANSACTION_1 = new Transacao("COMPRA", 20, 1.8);
     private Transacao TRANSACTION_2 = new Transacao("COMPRA", 80, 2);
@@ -33,14 +34,6 @@ public class MetodoCustoTest {
         TRANSACTION_4 = new Transacao("VENDA", 30, 0.0);
         TRANSACTION_5 = new Transacao("VENDA", 40, 0.0);
         TRANSACTION_6 = new Transacao("COMPRA", 60, 1.7);
-    }
-
-    @Test
-    public void printMenu(){
-        System.out.println("Digite a opção:");
-        System.out.println("1 - Carregar transações");
-        System.out.println("2 - Mostrar cálculo");
-        System.out.println("9 - Sair");
     }
 
     @Test
@@ -85,7 +78,7 @@ public class MetodoCustoTest {
 
         assertTrue(136 == metodoCusto.getCustoTotalFIFO().getVlrCustoVenda());
         assertTrue(272 == metodoCusto.getCustoTotalFIFO().getVlrCustoEstoque());
-        assertTrue(1.94 == metodoCusto.getCustoTotalFIFO().getVlrCustoMedioUnitario());
+        assertTrue( 272.0/140 == metodoCusto.getCustoTotalFIFO().getVlrCustoMedioUnitario());
     }
 
     @Test
@@ -97,14 +90,11 @@ public class MetodoCustoTest {
         metodoCusto.add(TRANSACTION_5);
         metodoCusto.add(TRANSACTION_6);
 
-        Stack<Transacao> stackLifo = metodoCusto.calculateLIFO();
+        metodoCusto.calculateLIFO();
 
-        assertTrue(stackLifo.pop().equals(TRANSACTION_6));
-        assertTrue(stackLifo.pop().equals(TRANSACTION_5));
-        assertTrue(stackLifo.pop().equals(TRANSACTION_4));
-        assertTrue(stackLifo.pop().equals(TRANSACTION_3));
-        assertTrue(stackLifo.pop().equals(TRANSACTION_2));
-        assertTrue(stackLifo.pop().equals(TRANSACTION_1));
+        assertTrue(150 == metodoCusto.getCustoTotalLIFO().getVlrCustoVenda());
+        assertTrue(258 == metodoCusto.getCustoTotalLIFO().getVlrCustoEstoque());
+        assertTrue( 258.0/140 == metodoCusto.getCustoTotalLIFO().getVlrCustoMedioUnitario());
     }
 
     @Test

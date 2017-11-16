@@ -11,7 +11,7 @@ import java.io.IOException;
 public interface IMetodoCusto {
     void load(File file) throws IOException;
     void calculateFIFO();
-    Stack<Transacao> calculateLIFO();
+    void calculateLIFO();
     void showCalculations();
     void add(Transacao transaction);
     List<Transacao> getTransactions();

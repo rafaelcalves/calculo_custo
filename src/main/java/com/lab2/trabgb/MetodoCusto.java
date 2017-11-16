@@ -39,34 +39,105 @@ public class MetodoCusto implements IMetodoCusto {
         int qtdEstoque = 0;
         Queue<Transacao> fifoQueue = new StaticQueue<>(transactions.numElements());
         for (int i = 0; i < transactions.numElements(); i++) {
-            if(transactions.get(i).getTipo() == "COMPRA") {
-                fifoQueue.enqueue(transactions.get(i));
-                custoTotalFIFO.setVlrCustoEstoque(custoTotalFIFO.getVlrCustoEstoque() + transactions.get(i).getCustoUnitario());
-                qtdEstoque += transactions.get(i).getQtde();
-            } else {
-                Transacao front = fifoQueue.front();
-                front.setQtde(front.getQtde() - transactions.get(i).getQtde());
-                custoTotalFIFO.setVlrCustoVenda(custoTotalFIFO.getVlrCustoVenda() + front.getCustoUnitario());
-                custoTotalFIFO.setVlrCustoEstoque(custoTotalFIFO.getVlrCustoEstoque() - transactions.get(i).getCustoUnitario());
-                qtdEstoque -= transactions.get(i).getQtde();
-            }
+            qtdEstoque = processTransactionFIFO(qtdEstoque, fifoQueue, transactions.get(i));
         }
-        custoTotalFIFO.setVlrCustoMedioUnitario(custoTotalFIFO.getVlrCustoEstoque()/qtdEstoque);
+        calculateVlrCustoMedioUnitario(custoTotalFIFO, qtdEstoque);
+    }
+
+    private int processTransactionFIFO(int qtdEstoque, Queue<Transacao> queue, Transacao transaction) {
+        if (transaction.getTipo() == "COMPRA") {
+            queue.enqueue(transaction);
+            qtdEstoque += updateCustoTotalWithBuyAndReturnQt(custoTotalFIFO, transaction);
+        } else {
+            qtdEstoque -= discountFrontBuyFIFO(queue, transaction);
+        }
+        return qtdEstoque;
+    }
+
+    private void calculateVlrCustoMedioUnitario(CustoTotal custoTotal, int qtdEstoque) {
+        custoTotal.setVlrCustoMedioUnitario(custoTotal.getVlrCustoEstoque() / qtdEstoque);
+    }
+
+    private int updateCustoTotalWithBuyAndReturnQt(CustoTotal custoTotal, Transacao buy) {
+        custoTotal.setVlrCustoEstoque(custoTotal.getVlrCustoEstoque() + buy.getCustoUnitario() * buy.getQtde());
+        return buy.getQtde();
+    }
+
+    private int discountFrontBuyFIFO(Queue<Transacao> queue, Transacao sell) {
+        return discountFrontBuyFIFO(queue, sell, 0);
+    }
+
+    private int discountFrontBuyFIFO(Queue<Transacao> queue, Transacao sell, int discountedQt) {
+        Transacao frontBuy = queue.front();
+
+        if (discountedQt == sell.getQtde())
+            return discountedQt;
+
+        discountedQt += setCustoTotalAndReturnDiscountedQtInSell(custoTotalFIFO, frontBuy, sell, discountedQt);
+
+        if (frontBuy.getQtde() == 0)
+            queue.dequeue();
+
+        return discountFrontBuyFIFO(queue, sell, discountedQt);
+    }
+
+    private int setCustoTotalAndReturnDiscountedQtInSell(CustoTotal custoTotal, Transacao frontBuy, Transacao sell, int discountedQt) {
+        int toDiscountQt = sell.getQtde() - discountedQt;
+
+        if (toDiscountQt > frontBuy.getQtde())
+            toDiscountQt = frontBuy.getQtde();
+
+        frontBuy.setQtde(frontBuy.getQtde() - toDiscountQt);
+        custoTotal.setVlrCustoVenda(custoTotal.getVlrCustoVenda() + frontBuy.getCustoUnitario() * toDiscountQt);
+        custoTotal.setVlrCustoEstoque(custoTotal.getVlrCustoEstoque() - frontBuy.getCustoUnitario() * toDiscountQt);
+
+        return toDiscountQt;
     }
 
     @Override
-    public Stack<Transacao> calculateLIFO() {
+    public void calculateLIFO() {
+        custoTotalLIFO = new CustoTotal("UEPS");
+        int qtdEstoque = 0;
         Stack<Transacao> fifoStack = new StaticStack<>(transactions.numElements());
-        for (int i = transactions.numElements() - 1; i >= 0; i--) {
-            fifoStack.push(transactions.get(i));
+        for (int i = 0; i < transactions.numElements(); i++) {
+            qtdEstoque = processTransactionLIFO(qtdEstoque, fifoStack, transactions.get(i));
         }
-        return fifoStack;
+        calculateVlrCustoMedioUnitario(custoTotalLIFO, qtdEstoque);
+    }
 
+    private int processTransactionLIFO(int qtdEstoque, Stack<Transacao> stack, Transacao transaction) {
+        if (transaction.getTipo() == "COMPRA") {
+            stack.push(transaction);
+            qtdEstoque += updateCustoTotalWithBuyAndReturnQt(custoTotalLIFO, transaction);
+        } else {
+            qtdEstoque -= discountFrontBuyLIFO(stack, transaction);
+        }
+        return qtdEstoque;
+    }
+
+
+    private int discountFrontBuyLIFO(Stack<Transacao> stack, Transacao sell) {
+        return discountFrontBuyLIFO(stack, sell, 0);
+    }
+
+    private int discountFrontBuyLIFO(Stack<Transacao> stack, Transacao sell, int discountedQt) {
+        Transacao frontBuy = stack.top();
+
+        if (discountedQt == sell.getQtde())
+            return discountedQt;
+
+        discountedQt += setCustoTotalAndReturnDiscountedQtInSell(custoTotalLIFO, frontBuy, sell, discountedQt);
+
+        if (frontBuy.getQtde() == 0)
+            stack.pop();
+
+        return discountFrontBuyLIFO(stack, sell, discountedQt);
     }
 
     @Override
     public void showCalculations() {
-
+        System.out.println(custoTotalFIFO);
+        System.out.println(custoTotalLIFO);
     }
 
     @Override
