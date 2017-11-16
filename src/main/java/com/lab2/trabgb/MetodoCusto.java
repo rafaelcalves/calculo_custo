@@ -13,6 +13,7 @@ public class MetodoCusto implements IMetodoCusto {
     private SinglyLinkedList<Transacao> transactions;
     private CustoTotal custoTotalFIFO;
     private CustoTotal custoTotalLIFO;
+    private Teclado teclado = new Teclado();
 
     public MetodoCusto() {
         transactions = new SinglyLinkedList<>();
@@ -21,15 +22,44 @@ public class MetodoCusto implements IMetodoCusto {
     }
 
     @Override
-    public void load(File file) throws IOException {
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] splitLine = line.split(";");
-                add(new Transacao(splitLine[1],
-                        Integer.parseInt(splitLine[2]),
-                        Double.parseDouble(splitLine[3])));
+    public void loadTransactions() {
+        boolean pathOk = false;
+
+        while (!pathOk) {
+            File file = defineFile();
+
+            try {
+                loadFile(file);
+                pathOk = true;
+            } catch (IOException e) {
+                System.out.println("Caminho ou arquivo inválido.");
             }
+        }
+    }
+
+    private File defineFile() {
+        String path = teclado.leString("Digite o caminho do arquivo a ser carregado:");
+
+        if (path.equals("my"))
+            path = System.getProperty("user.dir") + "/files/import.csv";
+
+        return new File(path);
+    }
+
+    private void loadFile(File file) throws IOException {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            transactions = new SinglyLinkedList<>();
+            processBufferLines(br);
+        }
+    }
+
+    private void processBufferLines(BufferedReader br) throws IOException {
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] splitLine = line.split(";");
+            add(new Transacao(splitLine[1],
+                    Integer.parseInt(splitLine[2]),
+                    Double.parseDouble(splitLine[3])));
         }
     }
 
@@ -45,8 +75,8 @@ public class MetodoCusto implements IMetodoCusto {
     }
 
     private int processTransactionFIFO(int qtdEstoque, Queue<Transacao> queue, Transacao transaction) {
-        if (transaction.getTipo() == "COMPRA") {
-            queue.enqueue(transaction);
+        if (transaction.getTipo().equals("COMPRA")) {
+            queue.enqueue(transaction.clone());
             qtdEstoque += updateCustoTotalWithBuyAndReturnQt(custoTotalFIFO, transaction);
         } else {
             qtdEstoque -= discountFrontBuyFIFO(queue, transaction);
@@ -106,8 +136,8 @@ public class MetodoCusto implements IMetodoCusto {
     }
 
     private int processTransactionLIFO(int qtdEstoque, Stack<Transacao> stack, Transacao transaction) {
-        if (transaction.getTipo() == "COMPRA") {
-            stack.push(transaction);
+        if (transaction.getTipo().equals("COMPRA")) {
+            stack.push(transaction.clone());
             qtdEstoque += updateCustoTotalWithBuyAndReturnQt(custoTotalLIFO, transaction);
         } else {
             qtdEstoque -= discountFrontBuyLIFO(stack, transaction);
@@ -136,8 +166,23 @@ public class MetodoCusto implements IMetodoCusto {
 
     @Override
     public void showCalculations() {
-        System.out.println(custoTotalFIFO);
-        System.out.println(custoTotalLIFO);
+        String metodo = "";
+        while (!metodo.equals("UEPS") && !metodo.equals("PEPS")) {
+            metodo = teclado.leString("Digite o método desejado:");
+            switch (metodo){
+                case "UEPS":
+                    calculateLIFO();
+                    System.out.println(custoTotalLIFO);
+                    break;
+                case "PEPS":
+                    calculateFIFO();
+                    System.out.println(custoTotalFIFO);
+                    break;
+                default:
+                    System.out.println("Método não encontrado!");
+                    break;
+            }
+        }
     }
 
     @Override

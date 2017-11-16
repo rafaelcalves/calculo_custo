@@ -13,13 +13,6 @@ public class CustoTotal {
         vlrCustoVenda = 0;
     }
 
-    public CustoTotal(String metodo, double vlrCustoVenda, double vlrCustoMedioUnitario, double vlrCustoEstoque) {
-        this.metodo = metodo;
-        this.vlrCustoVenda = vlrCustoVenda;
-        this.vlrCustoMedioUnitario = vlrCustoMedioUnitario;
-        this.vlrCustoEstoque = vlrCustoEstoque;
-    }
-
     @Override
     public String toString() {
         return String.format(metodo + " custo de venda: %6.2f    custo médio unitário: %6.2f    custo estoque: %6.2f",vlrCustoVenda,vlrCustoMedioUnitario,vlrCustoEstoque);
@@ -37,14 +30,6 @@ public class CustoTotal {
         if (Double.compare(that.vlrCustoMedioUnitario, vlrCustoMedioUnitario) != 0) return false;
         if (Double.compare(that.vlrCustoEstoque, vlrCustoEstoque) != 0) return false;
         return metodo != null ? metodo.equals(that.metodo) : that.metodo == null;
-    }
-
-    public String getMetodo() {
-        return metodo;
-    }
-
-    public void setMetodo(String metodo) {
-        this.metodo = metodo;
     }
 
     public double getVlrCustoVenda() {

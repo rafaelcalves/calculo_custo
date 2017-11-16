@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 
 public interface IMetodoCusto {
-    void load(File file) throws IOException;
+    void loadTransactions();
     void calculateFIFO();
     void calculateLIFO();
     void showCalculations();

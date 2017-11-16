@@ -11,6 +11,10 @@ public class Transacao {
         this.custoUnitario = custoUnitario;
     }
 
+    public Transacao clone(){
+        return new Transacao(tipo,qtde,custoUnitario);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -35,15 +39,7 @@ public class Transacao {
         return custoUnitario;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-
     public void setQtde(int qtde) {
         this.qtde = qtde;
-    }
-
-    public void setCustoUnitario(double custoUnitario) {
-        this.custoUnitario = custoUnitario;
     }
 }

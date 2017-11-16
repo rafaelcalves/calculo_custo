@@ -1,9 +1,5 @@
 package com.lab2.trabgb;
 
-
-import java.io.File;
-import java.io.IOException;
-
 public class MetodoCustoTest {
     private static MetodoCusto metodoCusto = new MetodoCusto();
     private static Teclado teclado = new Teclado();
@@ -39,40 +35,10 @@ public class MetodoCustoTest {
     }
 
     private static void carregarTransacoes() {
-        boolean pathOk = false;
-
-        while (!pathOk) {
-            String path = teclado.leString("Digite o caminho do arquivo a ser carregado:");
-
-            if (path.equals("my"))
-                path = System.getProperty("user.dir") + "/files/import.csv";
-
-            File file = new File(path);
-
-            try {
-                metodoCusto.load(file);
-                pathOk = true;
-            } catch (IOException e) {
-                System.out.println("Caminho ou arquivo inválido.");
-            }
-        }
+        metodoCusto.loadTransactions();
     }
 
     private static void mostrarCalculos() {
-        String metodo = "";
-        while (!metodo.equals("UEPS") && !metodo.equals("PEPS")) {
-            metodo = teclado.leString("Digite o método desejado:");
-            switch (metodo){
-                case "UEPS":
-                    metodoCusto.showCalculations();
-                    break;
-                case "PEPS":
-                    metodoCusto.showCalculations();
-                    break;
-                default:
-                    System.out.println("Método não encontrado!");
-                    break;
-            }
-        }
+        metodoCusto.showCalculations();
     }
 }
